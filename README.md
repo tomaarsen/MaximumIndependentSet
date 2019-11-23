@@ -1,6 +1,6 @@
 # Maximum Independent Set
 
-This repository holds a solution to a solution I was talked to solve. Two versions of the code are provided - one with comments, and one without. The remainder of this README is a section of the report I wrote for this problem and my corresponding solution.
+This repository holds a solution to a problem, which can be reconstructed as a maximum independent set problem, which I was tasked to solve. Two versions of the code are provided - one with comments, and one without. The remainder of this README is a section of the report I wrote for this problem and my corresponding solution.
 Note that the initial report was written in LaTeX and now converted to Markdown so Github can display it. This means that e.g. line numbers will not make as much sense.
 
 ---
