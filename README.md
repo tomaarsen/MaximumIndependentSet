@@ -4,6 +4,8 @@ This repository holds a solution to a problem, which can be reconstructed as a m
 
 Note that the initial report was written in LaTeX and now converted to Markdown so Github can display it. This means that e.g. line numbers will not make as much sense. It also means that LaTeX needs to be displayed as an image. See [README.ipynb](README.ipynb) for a version with correctly rendered math.
 
+I was quite happy with my work on this report and algorithm. So much so, that I decided to throw it on my GitHub. My contentness seems to have been well-placed, as I just received a grade of 97% for the work, placing this project in the top 2% of all submissions. I couldn't be more proud.
+
 ---
 
 ## Problem
