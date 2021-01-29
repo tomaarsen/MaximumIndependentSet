@@ -2,7 +2,7 @@
 
 This repository holds a solution to a problem, which can be reconstructed as a maximum independent set problem, which I was tasked to solve. Two versions of the code are provided - one with comments, and one without. The remainder of this README is a section of the report I wrote for this problem and my corresponding solution.
 
-Note that the initial report was written in LaTeX and now converted to Markdown so Github can display it. This means that e.g. line numbers will not make as much sense. It also means that LaTeX needs to be displayed as an image. See [README.ipynb](README.ipynb) for a version with correctly rendered math.
+Note that the initial report was written in LaTeX and now converted to Markdown so Github can display it. This means that e.g. line numbers will not make as much sense. It also means that LaTeX needs to be displayed as an image, which also means that users with a dark theme are unable to see the LaTeX in this README. See [README.ipynb](README.ipynb) for a version with correctly rendered math. 
 
 I was quite happy with my work on this report and algorithm. So much so, that I decided to throw it on my GitHub. My contentness seems to have been well-placed, as I just received a grade of 97% for the work, placing this project in the top 2% of all submissions. I couldn't be more proud.
 
@@ -40,6 +40,8 @@ Output should be given via **stdout**. The program should either output `possibl
 In order to start looking for solutions to this problem, we must first consider potential data structures to represent the given information. 
 
 ### Maximum number of bins
+*(Note, See [README.ipynb](README.ipynb) for a version with correctly rendered math)*
+
 If we consider:
 ![G = (V, E)](https://render.githubusercontent.com/render/math?math=G%20%3D%20(V%2C%20E)), with ![V](https://render.githubusercontent.com/render/math?math=V) as the set of intersections and ![E](https://render.githubusercontent.com/render/math?math=E) as the set of streets connecting these intersections, ![\#b(G)](https://render.githubusercontent.com/render/math?math=%5C%23b(G)) as the number of bins that can be placed on graph G without breaking the non-adjacency constraint, ![Adj\[v\]](https://render.githubusercontent.com/render/math?math=Adj%5Bv%5D) as the set of neighbours of some vertex v, then the following must hold:
 
