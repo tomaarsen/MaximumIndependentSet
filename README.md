@@ -17,6 +17,8 @@ I was tasked with solving a specific algorithmic problem, inspired by a real lif
 
 The constraint specifying that two adjacent intersections may not both have a garbage bin will be referred to as the non-adjacency constraint from now on.
 
+---
+
 ### Input
 Input to the program is given via **stdin**, in the following format:
 ```
@@ -33,11 +35,17 @@ Input to the program is given via **stdin**, in the following format:
 The first line contains integers *n* (1 <= *n* <= 200), *m* (1 <= *m* <= 100) and *b* (1 <= *b* <= 20). These values correspond to the number of streets, intersections and bins to be placed respectively.
 All subsequent lines correspond to a street that exists between the intersections identified by the given integers.
 
+---
+
 ### Output
 Output should be given via **stdout**. The program should either output `possible` or `impossible`, depending on whether it's possible for *b* bins to be placed on the *m* intersections, without breaking the condition stating that two bins may never be placed on adjacent intersections.
 
+---
+
 ## Problem Transformation
 In order to start looking for solutions to this problem, we must first consider potential data structures to represent the given information. 
+
+---
 
 ### Maximum number of bins
 *(Note, See [README.ipynb](README.ipynb) for a version with correctly rendered math)*
@@ -57,13 +65,10 @@ In words, the number of bins that can be placed on the graph without breaking th
 At this point it becomes apparent that working with the ![G = (V, E)](https://render.githubusercontent.com/render/math?math=G%20%3D%20(V%2C%20E)) representation is going to be unnecessarily inefficient in an algorithm, as we would have to update ![E](https://render.githubusercontent.com/render/math?math=E) for all recursive calls. However, this is not needed. We know that the only use for E in the previous equation is in ![Adj\[v\]](https://render.githubusercontent.com/render/math?math=Adj%5Bv%5D), to find the set of adjacent vertices for some vertex ![v](https://render.githubusercontent.com/render/math?math=v). If we consider ![U](https://render.githubusercontent.com/render/math?math=U) to be a set of vertices that only existed in a supergraph of ![V](https://render.githubusercontent.com/render/math?math=V), then the following holds:
 ![\forall p:V, V - Adj\[p\] = V - (Adj\[p\] \cup \{u | u \in U \land u \notin V\})](https://render.githubusercontent.com/render/math?math=%5Cforall%20p%3AV%2C%20V%20-%20Adj%5Bp%5D%20%3D%20V%20-%20(Adj%5Bp%5D%20%5Ccup%20%5C%7Bu%20%7C%20u%20%5Cin%20U%20%5Cland%20u%20%5Cnotin%20V%5C%7D))
 
-
 So, if we keep the vertices that should no longer be considered within E, then ![Adj\[p\]](https://render.githubusercontent.com/render/math?math=Adj%5Bp%5D) may return more vertices, but as none of these vertices are in ![v](https://render.githubusercontent.com/render/math?math=v), there is no difference between reducing E and not doing so. This saves us a step.
 So, we can use a set representation, where ![G = \{v_0, v_1, ..., v_m\}](https://render.githubusercontent.com/render/math?math=G%20%3D%20%5C%7Bv_0%2C%20v_1%2C%20...%2C%20v_m%5C%7D), and ![\forall v:G, Adj\[v\]](https://render.githubusercontent.com/render/math?math=%5Cforall%20v%3AG%2C%20Adj%5Bv%5D) is defined to be the set of adjacent vertices for the initial graph. This allows us to simplify ![\#b(G)](https://render.githubusercontent.com/render/math?math=%5C%23b(G)) greatly:
 
 ![\#b(G) =  \begin{cases} \quad \text{iff a bin is placed on arbitrary vertex }p\text{:}\\ 1 + \#b(G - p - Adj\[p\])\\ \quad \text{iff no bin is placed on arbitrary vertex }p\text{:}\\ \#b(G - p)\\ \quad \text{iff no arbitrary vertex }p\text{ exists:}\\ 0 \end{cases}](https://render.githubusercontent.com/render/math?math=%5C%23b(G)%20%3D%20%20%5Cbegin%7Bcases%7D%20%5Cquad%20%5Ctext%7Biff%20a%20bin%20is%20placed%20on%20arbitrary%20vertex%20%7Dp%5Ctext%7B%3A%7D%5C%5C%201%20%2B%20%5C%23b(G%20-%20p%20-%20Adj%5Bp%5D)%5C%5C%20%5Cquad%20%5Ctext%7Biff%20no%20bin%20is%20placed%20on%20arbitrary%20vertex%20%7Dp%5Ctext%7B%3A%7D%5C%5C%20%5C%23b(G%20-%20p)%5C%5C%20%5Cquad%20%5Ctext%7Biff%20no%20arbitrary%20vertex%20%7Dp%5Ctext%7B%20exists%3A%7D%5C%5C%200%20%5Cend%7Bcases%7D)
-
-
 
 Because we want to maximize ![\#b(G)](https://render.githubusercontent.com/render/math?math=%5C%23b(G)), we can compare the results from both options to decide whether we want to place a bin on ![p](https://render.githubusercontent.com/render/math?math=p). We can simply choose the higher value of the two:
 
@@ -72,6 +77,8 @@ Because we want to maximize ![\#b(G)](https://render.githubusercontent.com/rende
 At this point the concept has been reduced such that only few set difference operations are required, however it is still quite inefficient as it uses multiple recursion. The worst case scenario for this equation would be ![m](https://render.githubusercontent.com/render/math?math=m) vertices, without any edges. So, ![\forall v:G, Adj\[v\] = \emptyset](https://render.githubusercontent.com/render/math?math=%5Cforall%20v%3AG%2C%20Adj%5Bv%5D%20%3D%20%5Cemptyset), which means the parameter for both recursive calls is ![G - p](https://render.githubusercontent.com/render/math?math=G%20-%20p), and hence the equation would have ![O(2^m)](https://render.githubusercontent.com/render/math?math=O(2%5Em)) time complexity.
 
 Some of these cases may be discarded, and we can use strategies to improve the running time of this concept. I will go over my optimization steps in the following section.
+
+---
 
 ## Optimization
 In this section I will start with the following code sample, which was shown to be correct in the previous section. Over the course of this section I will improve this code sample by pruning some cases.
@@ -85,6 +92,8 @@ In this section I will start with the following code sample, which was shown to 
 ```
 The recursive call in the first parameter of the `max` function will be referred to as the first case, and the second recursive call will be referred to as the second case from now on.
 
+---
+
 ### Base Case pruning
 We can extend our base case `if len(vertices) == 0: return 0` by the case where vertices contains just one vertex. In this case, we can always place a bin on this vertex, and never recurse further. Hence, if `len(vertices) == 1`, then we should return 1. We can combine this with the existing base case to:
 ```python
@@ -95,6 +104,8 @@ We can extend our base case `if len(vertices) == 0: return 0` by the case where 
         return max(1 + self.hash_b(vertices - picked.neighbours), 
                    self.hash_b(vertices))
 ```
+
+---
 
 ### Early Termination
 The algorithm will go through all recursive cases, even if we would already be able to conclusively say that placing ![b](https://render.githubusercontent.com/render/math?math=b) bins is possible halfway through. We want to avoid this, and stop immediately when we know we can place ![b](https://render.githubusercontent.com/render/math?math=b) bins.
@@ -115,6 +126,7 @@ If the value resulting from the first case plus this `self.cur` is larger than t
 ```
 Note that only the first case can increment the result, so this method of pruning only works for this case, and not the second.
 
+---
 
 ### Halfway Pruning
 Not always do we need to calculate the second case. We only care about this case when its result may be larger than `first`. Hence, all cases where we can conclusively say that it will not be can be discarded.
@@ -134,6 +146,7 @@ The best case scenario for the second case is if all remaining vertices are nona
         return max(first, self.hash_b(vertices))
 ```
 
+---
 
 ### Few Neighbour Pruning
 If `picked` has no neighbours still in `vertices`, then the set used to recurse in the first case will be the same set as the one used in the second case. The difference is that the first case results in a value exactly 1 higher than the second case. In this case, we should ignore the second case.
@@ -154,6 +167,7 @@ Moreso, if `picked` has exactly one neighbour still in `vertices`, then the seco
 ```
 Note that this pruning step is triggered more often than the **Halfway Pruning** pruning method, and hence is placed at the start of the `or` in the `if`-statement.
 
+---
 
 ### Memoization
 By far the largest optimization technique used is memoization. The input and output of every call to `hash_b` is stored in a cache, and the output from the cache is returned rather than computing the result using the function, if possible. This technique is so useful here is because it's common for `hash_b` to be called with the same set of vertices multiple times.
@@ -165,6 +179,8 @@ However, the results were not consistent enough for me to stop caching the secon
 
 
 How exactly memoization is implemented is best shown in the program as a whole.
+
+---
 
 ## The \#B Algorithm
 ```python
@@ -248,6 +264,8 @@ if __name__ == "__main__":
 
 In section **3 Optimization** I have already shown why and how the `hash_b` function itself works, so here I'll go over some other implementation choices I've made.
 
+---
+
 ### Initialization
 On line 74 of the program, we create a Graph object. Some class attributes are initialized for it:
 ```python
@@ -261,7 +279,7 @@ The `self.n`, `self.n` and `self.b` correspond directly to the ![n](https://rend
 `self.vertices` is the set of vertices for the total graph. After it is filled once, it will no longer be edited.
 `self.cur` will constantly change, as it's incremented before some recursive calls, and decremented after.
 
-
+---
 
 ### Input Parsing
 Before the algorithm can start, we need to store the data we receive via **stdin**. Graph has a `parse_input()` method that does exactly that:
@@ -288,7 +306,7 @@ For all *n* edges/streets, we take the integers identifying which vertices/inter
 We add an edge to both of the vertices. Or rather, we add the vertex identified by *j* to the set of neighbours of the vertex identified by *i*, and vice versa.
 Because we would like to use set operations in the \#B algorithm itself, we convert the list of vertices to a set.
 
-
+---
 
 ### Other Choices
 Each class uses a `__slots__` list. This list reserves space for the declared attributes and prevents the automatic creation of `__dict__` and `__weakref__` for each instance. Using it may speed up accesses of these attributes.
@@ -299,6 +317,8 @@ The `Vertex` class has a custom implementation of `__hash__`. This overrides the
 
 ### Contributing
 I am not taking contributions for this repository, as it is designed as an archive.
+
+---
 
 ### License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
